@@ -1,0 +1,349 @@
+:root {
+  --accent: #ffd23f;
+  --ink: #3b2a00;
+  --card: #fff8e1;
+  --card-edge: #d9a441;
+  --orange: #ff7a1a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: 'Fredoka', system-ui, sans-serif;
+  background: radial-gradient(circle at 30% 20%, #4b3b8f, #1b1f3b 70%);
+  color: #fff;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px;
+}
+
+/* The stage keeps a 2:3 ratio and fits inside the viewport. All sizes inside use cqw so the UI scales with it. */
+.stage {
+  position: relative;
+  width: min(100%, calc((100dvh - 64px) * 2 / 3));
+  aspect-ratio: 2 / 3;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 0 4px rgba(255, 255, 255, 0.08);
+  container-type: inline-size;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+
+.canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hud {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.score,
+.title {
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  paint-order: stroke fill;
+}
+
+.score {
+  position: absolute;
+  top: 7%;
+  inset-inline: 0;
+  font-size: 16cqw;
+  color: #fff;
+  -webkit-text-stroke: 1.6cqw var(--ink);
+  text-shadow: 0 1cqw 0 rgba(0, 0, 0, 0.25);
+  animation: pop 0.2s ease-out;
+}
+
+.controls {
+  position: absolute;
+  top: 3cqw;
+  right: 3cqw;
+  display: flex;
+  gap: 2cqw;
+  pointer-events: auto;
+}
+
+.icon-btn {
+  width: 10cqw;
+  height: 10cqw;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.28);
+  color: #fff;
+  font-size: 4.5cqw;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: transform 0.1s;
+}
+
+.icon-btn:hover {
+  transform: scale(1.08);
+}
+
+/* ---- Screens ---- */
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5cqw;
+}
+
+.title {
+  margin: 0;
+  font-size: 14cqw;
+  color: var(--accent);
+  -webkit-text-stroke: 1.8cqw var(--ink);
+  text-shadow: 0 1.4cqw 0 rgba(0, 0, 0, 0.25);
+  animation: float 2.4s ease-in-out infinite;
+}
+
+.title span {
+  display: block;
+  color: #fff;
+}
+
+.ready {
+  justify-content: space-between;
+  padding: 14% 0 30%;
+}
+
+.ready-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3cqw;
+}
+
+.tap-hint {
+  font-size: 6cqw;
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.32);
+  padding: 2cqw 5cqw;
+  border-radius: 999px;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.chip {
+  font-size: 4.5cqw;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--card);
+  padding: 1.2cqw 4cqw;
+  border-radius: 999px;
+  box-shadow: 0 0.8cqw 0 rgba(0, 0, 0, 0.2);
+}
+
+.over,
+.paused {
+  background: rgba(15, 12, 40, 0.3);
+  animation: fade-in 0.3s ease-out;
+}
+
+.paused {
+  background: rgba(15, 12, 40, 0.5);
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 8cqw;
+  padding: 5cqw 7cqw;
+  color: var(--ink);
+  background: var(--card);
+  border: 1cqw solid var(--card-edge);
+  border-radius: 4cqw;
+  box-shadow: 0 2cqw 0 rgba(0, 0, 0, 0.2);
+  animation: slide-up 0.45s cubic-bezier(0.2, 1.4, 0.4, 1) 0.1s both;
+}
+
+.medal-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5cqw;
+  font-size: 3.5cqw;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #a07a2c;
+}
+
+.medal {
+  width: 18cqw;
+  height: 18cqw;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 9cqw;
+  color: rgba(255, 255, 255, 0.9);
+  box-shadow:
+    inset 0 -1cqw 0 rgba(0, 0, 0, 0.18),
+    0 0 0 1cqw rgba(0, 0, 0, 0.08);
+}
+
+.medal:not(.empty) {
+  animation: medal-in 0.6s cubic-bezier(0.2, 1.6, 0.4, 1) 0.45s both;
+}
+
+.medal.empty {
+  background: #ead9a8;
+}
+.medal-bronze {
+  background: radial-gradient(circle at 35% 30%, #f6c993, #b0662b);
+}
+.medal-silver {
+  background: radial-gradient(circle at 35% 30%, #ffffff, #9ea7ad);
+}
+.medal-gold {
+  background: radial-gradient(circle at 35% 30%, #fff1a1, #d4a017);
+}
+.medal-platinum {
+  background: radial-gradient(circle at 35% 30%, #ffffff, #8fd3e8);
+}
+
+.stats {
+  display: flex;
+  flex-direction: column;
+  gap: 3cqw;
+  text-align: right;
+}
+
+.stat-label {
+  display: block;
+  font-size: 4cqw;
+  font-weight: 600;
+  color: #d9822b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stat strong {
+  font-size: 10cqw;
+  line-height: 1;
+}
+
+.new {
+  font-style: normal;
+  font-size: 3cqw;
+  color: #fff;
+  background: #ff4d4d;
+  padding: 0.4cqw 1.5cqw;
+  margin-right: 1.5cqw;
+  border-radius: 1cqw;
+  vertical-align: middle;
+}
+
+.btn {
+  font-family: inherit;
+  font-size: 6cqw;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(#ffa24a, var(--orange));
+  border: none;
+  border-radius: 999px;
+  padding: 3cqw 9cqw;
+  box-shadow: 0 1.2cqw 0 #b54700;
+  cursor: pointer;
+  animation: slide-up 0.45s cubic-bezier(0.2, 1.4, 0.4, 1) 0.25s both;
+}
+
+.btn:active {
+  transform: translateY(1cqw);
+  box-shadow: 0 0.2cqw 0 #b54700;
+}
+
+.btn:focus-visible,
+.icon-btn:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+
+.help {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.65;
+  text-align: center;
+}
+
+/* ---- Animations ---- */
+
+@keyframes float {
+  50% {
+    transform: translateY(-2cqw);
+  }
+}
+
+@keyframes pulse {
+  50% {
+    transform: scale(1.06);
+    opacity: 0.85;
+  }
+}
+
+@keyframes pop {
+  from {
+    transform: scale(1.35);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(12cqw);
+  }
+}
+
+@keyframes medal-in {
+  from {
+    opacity: 0;
+    transform: scale(0) rotate(-180deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+  }
+}
